@@ -1,4 +1,5 @@
 import './App.css'
+import Chart1 from './components/Chart1'
 
 type AppProps = {
   id: string
@@ -7,8 +8,8 @@ type AppProps = {
 function App(props: AppProps) {
 
   return (
-    <div className="text-xl underline">
-      {`${props.id}, volevi dire qualcosa?`}
+    <div>
+      {props.id === "1" && <Chart1 />}
     </div>
   )
 }
