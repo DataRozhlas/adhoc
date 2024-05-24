@@ -63,7 +63,7 @@ function Chart1() {
             <YAxis>
                 <YAxis.Title>Průměrné platy (Kč)</YAxis.Title>
                 <BarSeries name="2022" data={data.map((line) => Number(line[line.length - 3]))} color={colors[1]} datalbels={{ enabled: false }} />
-                <BarSeries name="2024" data={data.map((line) => Number(line[line.length - 1]))} color={colors[0]} dataLabels={{ enabled: true, formatter: function () { return `${this.y?.toLocaleString("cs-CZ") || null} Kč` } }} />
+                <BarSeries name="2024" data={data.map((line) => Number(line[line.length - 1]))} color={colors[0]} dataLabels={{ enabled: true, inside: true, align: "right", formatter: function () { return `${this.y?.toLocaleString("cs-CZ") || null} Kč` } }} />
             </YAxis>
         </HighchartsChart>
         <p className="text-xs text-end">
