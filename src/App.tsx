@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { usePostMessageWithHeight } from "./hooks/usePostHeightMessage";
 import Chart1 from './components/Chart1'
 import Chart2 from './components/Chart2'
+import Chart3 from './components/Chart3'
 
 import './App.css'
 
@@ -22,6 +23,7 @@ function App(props: AppProps) {
     <div ref={containerRef}>
       {props.id === "1" && <Chart1 />}
       {props.id === "2" && <Chart2 />}
+      {props.id === "3" && <Chart3 />}
 
     </div>
   )
