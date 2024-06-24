@@ -16,7 +16,7 @@ const data = [
     ["Ministerstvo zemědělství", 50044, 51325, 51092, 51299, 57221, 49668, 49414],
     ["Ministerstvo školství, mládeže a tělovýchovy", 49760, 51785, 51783, 54461, 55258, 51591, 48899],
     ["Ministerstvo zahraničních věcí", 40946, 42986, 45047, 43757, 44623, 41200, 47143],
-    ["Ministerstvo vnitra", 46406, 48785, 50576, 51055, undefined, 45903, 46000]
+    ["Ministerstvo vnitra", 46406, 48785, 50576, 51055, 47132, 45903, 46141]
 ];
 
 const colors = [
@@ -39,7 +39,7 @@ Highcharts.setOptions({
 function Chart1() {
     return <HighchartsProvider Highcharts={Highcharts}>
         <h1 className="text-2xl font-bold">Jak se změnily průměrné platy na ministerstvech</h1>
-        <h2>Ministerstva vnitra a obrany údaje za rok 2022 neposkytla – jen sloučené s platy vojáků, hasičů a policistů</h2>
+        <h2>Ministerstvo obrany údaje za rok 2022 neposkytlo – jen sloučené s platy vojáků</h2>
         <HighchartsChart plotOptions={{
             bar: {
                 pointPadding: 0,
@@ -67,7 +67,7 @@ function Chart1() {
             </YAxis>
         </HighchartsChart>
         <p className="text-xs text-end">
-            Zdroj dat: Ministerstvo financí
+            Zdroj dat: Ministerstvo financí a ministerstvo vnitra
         </p>
         <p className="text-xs text-end">
             Údaje ze Státního závěrečného účtu (2022) a ze schváleného rozpočtu (2024)
