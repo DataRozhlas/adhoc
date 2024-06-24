@@ -4,6 +4,8 @@ import { usePostMessageWithHeight } from "./hooks/usePostHeightMessage";
 import Chart1 from './components/Chart1'
 import Chart2 from './components/Chart2'
 import Chart3 from './components/Chart3'
+import Chart4 from './components/Chart4'
+
 
 import './App.css'
 
@@ -24,6 +26,8 @@ function App(props: AppProps) {
       {props.id === "1" && <Chart1 />}
       {props.id === "2" && <Chart2 />}
       {props.id === "3" && <Chart3 />}
+      {props.id === "4" && <Chart4 />}
+
 
     </div>
   )
