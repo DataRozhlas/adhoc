@@ -10,7 +10,6 @@ Highcharts.setOptions({
     lang: {
         numericSymbols: [" tis.", " mil.", " mld.", " bil."],
     },
-    colors: ['#d7191c', 'lightgrey'].reverse()
 });
 
 
@@ -53,7 +52,7 @@ function Chart3() {
                             return label;
                         }
                     }}>
-                    <PieSeries name="hmotnost" data={data.map((line) => Number(line[1]))} />
+                    <PieSeries name="hmotnost" data={data.map((line) => Number(line[1]))} colors={["lightgrey", "#d7191c"]} />
 
                 </YAxis>
             </HighchartsChart>

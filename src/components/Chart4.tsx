@@ -10,7 +10,6 @@ Highcharts.setOptions({
     lang: {
         numericSymbols: [" tis.", " mil.", " mld.", " bil."],
     },
-    colors: ['#fdae61', '#a6d96a']
 });
 
 
@@ -19,8 +18,8 @@ function Chart4() {
 
     return (
         <HighchartsProvider Highcharts={Highcharts}>
-            <h1 className="text-2xl font-bold">Struktura potravinového odpadu</h1>
-            <h2>Nevyhnutelné jsou zejména hovězí kosti a zbytky ze zpracování zeleniny</h2>
+            <h1 className="text-2xl font-bold">Struktura potravinového odpadu při přípravě jídla</h1>
+            <h2>Nevyhnutelné jsou ve fázi přípravy zejména hovězí kosti a zbytky ze zpracování zeleniny</h2>
 
             <HighchartsChart plotOptions={{
                 pie: {
@@ -56,7 +55,7 @@ function Chart4() {
                             return label;
                         }
                     }}>
-                    <PieSeries name="podíl" data={data.map((line) => Number(line[1]))} />
+                    <PieSeries name="podíl" data={data.map((line) => Number(line[1]))} colors={["lightgrey", '#fdae61']} />
 
                 </YAxis>
             </HighchartsChart>
