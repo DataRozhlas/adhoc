@@ -2386,8 +2386,18 @@ for (const item of medals) {
             }
         }
     }
-    result.push({ ...item, pop, gdp: latestHdpValue });
+    result.push({ ...item, pop, gdp: latestHdpValue, w: 4 * item.g + 2 * item.s + item.b });
 
 }
 
-Bun.write("src/assets/olympic-medals-pop-gdp.json", JSON.stringify(result));
+await result.sort((a, b) => {
+    return a.cz.localeCompare(b.cz, "cs");
+})
+
+
+result.sort((a, b) => {
+    return b.t - a.t;
+})
+
+
+await Bun.write("src/assets/olympic-medals-pop-gdp.json", JSON.stringify(result));

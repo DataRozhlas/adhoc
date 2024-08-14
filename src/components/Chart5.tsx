@@ -1,34 +1,90 @@
-import medals from "../assets/olympic-medals.json"
+import Highcharts from 'highcharts';
+import { HighchartsChart, HighchartsProvider, Chart, BarSeries, XAxis, YAxis } from "react-jsx-highcharts";
+
+import medals from "../assets/olympic-medals-pop-gdp.json"
 
 import { useState, useEffect } from "react"
 
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
-import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts"
 
-import {
-    ChartConfig,
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
-} from "@/components/ui/chart"
+function assignRanks(data: any[]): any[] {
+    let rank = 1;
+    let prevValue = data[0].t;
+    data[0].cz = `<strong>${rank}.</strong> ${data[0].cz}`;
 
-const chartConfig = {
-    desktop: {
-        label: "Desktop",
-        color: "hsl(var(--chart-1))",
-    },
-    mobile: {
-        label: "Mobile",
-        color: "hsl(var(--chart-2))",
-    },
-    label: {
-        color: "hsl(var(--background))",
-    },
-} satisfies ChartConfig
+    for (let i = 1; i < data.length; i++) {
+        if (data[i].t !== prevValue) {
+            rank = i + 1;
+            prevValue = data[i].t;
+            data[i].cz = `<strong>${rank}.</strong> ${data[i].cz}`;
+        }
+    }
 
-console.log(medals)
+    return data;
+}
+
+function getRank(value: number, data: any[]): number {
+    const rank = data.findIndex((country: any) => country.t === value) + 1;
+    return rank;
+}
+
+function prepareData(medalMethod: string, relativeMethod: string): { cz: string; t: number }[] {
+    if (medalMethod === "all") {
+        if (relativeMethod === "pop") {
+            const result = medals.filter((country: any) => country.pop > 0).map((country: any) => { return { cz: country.cz, t: country.pop / country.t } });
+            result.sort((a, b) => a.t - b.t);
+            return assignRanks(result);
+        }
+        if (relativeMethod === "gdp") {
+            const result = medals.filter((country: any) => country.gdp > 0).map((country: any) => { return { cz: country.cz, t: country.gdp / 1000000 / country.t } });
+            result.sort((a, b) => a.t - b.t);
+            return assignRanks(result);
+        }
+        return assignRanks(medals.map((country: any) => { return { cz: country.cz, t: country.t } }));
+
+    }
+    if (medalMethod === "gold") {
+        if (relativeMethod === "pop") {
+            const result = medals.filter((country: any) => country.g > 0).map((country: any) => { return { cz: country.cz, t: country.pop / country.g } });
+            result.sort((a, b) => a.t - b.t);
+            return assignRanks(result);
+        }
+        if (relativeMethod === "gdp") {
+            const result = medals.filter((country: any) => country.g > 0 && country.gdp > 0).map((country: any) => { return { cz: country.cz, t: country.gdp / 1000000 / country.g } });
+            result.sort((a, b) => a.t - b.t);
+            return assignRanks(result);
+        }
+        return assignRanks(medals.filter((country: any) => country.g > 0).map((country: any) => { return { cz: country.cz, t: country.g } }).sort((a, b) => {
+            const diff = b.t - a.t;
+            if (diff === 0) {
+                return a.cz.localeCompare(b.cz);
+            }
+            return diff;
+        }));
+    }
+    if (medalMethod === "weighted") {
+        if (relativeMethod === "pop") {
+            const result = medals.map((country: any) => { return { cz: country.cz, t: country.pop / country.w } });
+            result.sort((a, b) => a.t - b.t);
+            return assignRanks(result);
+        }
+        if (relativeMethod === "gdp") {
+            const result = medals.map((country: any) => { return { cz: country.cz, t: country.gdp / 1000000 / country.w } });
+            result.sort((a, b) => a.t - b.t);
+            return assignRanks(result);
+        }
+        return assignRanks(medals.map((country: any) => { return { cz: country.cz, t: country.w } }).sort((a, b) => {
+            const diff = b.t - a.t;
+            if (diff === 0) {
+                return a.cz.localeCompare(b.cz);
+            }
+            return diff;
+        }));;
+    }
+    return [];
+}
 
 function Chart5() {
 
@@ -36,6 +92,23 @@ function Chart5() {
 
     const [relativeMethod, setRelativeMethod] = useState("none")
 
+    const [data, setData] = useState([] as { cz: string; t: number }[])
+
+    const [czechia, setCzechia] = useState(5)
+
+    useEffect(() => {
+        const newData = prepareData(medalMethod, relativeMethod);
+        setData(newData);
+    }, [medalMethod, relativeMethod])
+
+
+    useEffect(() => {
+        console.log(data);
+        const czechiaCountry = data.find((country: any) => country.cz.toString().includes("Česká republika"));
+        if (czechiaCountry) {
+            setCzechia(czechiaCountry.t);
+        }
+    }, [data])
 
     return <div className="max-w-[620px] mx-auto">
         <h1 className="text-2xl font-bold">Pořadí států podle počtu medailí na LOH 2024 v Paříži</h1>
@@ -84,59 +157,115 @@ function Chart5() {
         </div>
 
         <div>
-            <ChartContainer config={chartConfig} className={"min-h-[1000px]"}>
-                <BarChart
-                    accessibilityLayer
-                    data={medals}
-                    layout="vertical"
-                    margin={{
-                        right: 16,
-                    }}
-                    maxBarSize={16}
-                    barGap={"10%"}
-                >
-                    <CartesianGrid horizontal={false} />
-                    <YAxis
-                        dataKey="cz"
-                        type="category"
-                        tickLine={false}
-                        tickMargin={10}
-                        axisLine={false}
-                        tickFormatter={(value) => value.slice(0, 3)}
-                        hide
-                    />
-                    <XAxis dataKey="t" type="number" hide />
-                    <ChartTooltip
-                        cursor={false}
-                        content={<ChartTooltipContent indicator="line" />}
-                    />
-                    <Bar
-                        dataKey="t"
-                        layout="vertical"
-                        fill="var(--color-desktop)"
-                        radius={4}
+            <HighchartsProvider Highcharts={Highcharts}>
+                <HighchartsChart plotOptions={{
+                    bar: {
+                        pointPadding: 0,
+                        groupPadding: 0.1,
+                    },
+                    series: {
+                        animation: false,
+                        states: { hover: { enabled: false } }, // disable hover
+                        dataLabels: {
+                            enabled: true,
+                            formatter: function (this: any) {
+                                if (this.point.index === 0) {
+                                    const words = function () {
+                                        switch (medalMethod) {
+                                            case "gold":
+                                                if (relativeMethod === "pop") return "obyvatel na zlatou medaili";
+                                                if (relativeMethod === "gdp") return "milionů dolarů HDP na zlatou medaili";
+                                                return "zlatých medailí";
+                                            case "weighted":
+                                                if (relativeMethod === "pop") return "obyvatel na váženou medaili";
+                                                if (relativeMethod === "gdp") return "milionů dolarů HDP na váženou medaili";
+                                                return "vážených medailí";
+                                            default:
+                                                if (relativeMethod === "pop") return "obyvatel na medaili";
+                                                if (relativeMethod === "gdp") return "milionů dolarů HDP na medaili";
+                                                return "medailí";
+                                        }
+                                    }
+
+                                    return `${this.point.y?.toLocaleString("cs", { maximumFractionDigits: 0 })} ${words()}`;
+                                };
+                                return this.point.y?.toLocaleString("cs", { maximumFractionDigits: 0 });
+                            },
+                            style: {
+                                textOutline: 'none',
+                            }
+                        }
+                    },
+
+                }}>
+                    <Chart height={data.length * 25} marginRight={20} marginTop={25} />
+
+
+
+                    <XAxis categories={data.map(country => String(country.cz))}
+                        labels={{
+                            formatter: function ({ value }) {
+                                if (value.toString().includes("Česká republika")) {
+                                    return `<b>${this.value}</b>`;
+                                }
+                                return this.value.toString();
+                            }
+                        }}
                     >
-                        <LabelList
-                            dataKey="month"
-                            position="insideLeft"
-                            offset={8}
-                            className="fill-[--color-label]"
-                            fontSize={12}
-                        />
-                        <LabelList
-                            dataKey="t"
-                            position="right"
-                            offset={8}
-                            className="fill-foreground"
-                            fontSize={12}
-                        />
-                    </Bar>
-                </BarChart>
-            </ChartContainer>
 
-        </div>
+                    </XAxis>
 
-    </div>
+                    <YAxis
+                        tickAmount={2}
+                        labels={{
+                            formatter: ({ value, isLast }) => {
+                                const words = function () {
+                                    switch (medalMethod) {
+                                        case "gold":
+                                            if (relativeMethod === "pop") return "obyvatel na zlatou medaili";
+                                            if (relativeMethod === "gdp") return "milionů dolarů HDP na zlatou medaili";
+                                            return "zlatých medailí";
+                                        case "weighted":
+                                            if (relativeMethod === "pop") return "obyvatel na váženou medaili";
+                                            if (relativeMethod === "gdp") return "milionů dolarů HDP na váženou medaili";
+                                            return "vážených medailí";
+                                        default:
+                                            if (relativeMethod === "pop") return "obyvatel na medaili";
+                                            if (relativeMethod === "gdp") return "milionů dolarů HDP na medaili";
+                                            return "medailí";
+                                    }
+                                }
+
+
+                                const label = isLast ? `${value.toLocaleString("cs", { maximumFractionDigits: 0 })} ${words()}` : `${value}`;
+                                return label;
+                            }
+                        }}
+                        plotLines={[{
+                            value: czechia,
+                            color: 'grey',
+                            width: 2,
+                            dashStyle: "ShortDot",
+                            label: {
+                                text: `Česko (${getRank(czechia, data)}. místo)`,
+                                rotation: 0,
+                                x: -10,
+                                y: -7
+                            }
+                        }]}
+                    >
+                        <BarSeries name={medalMethod === "gold" ? "zlaté medaile" : medalMethod === "weighted" ? "vážené medaile" : "medaile"} data={data.map((country) => Number(country.t))} />
+
+                    </YAxis>
+                </HighchartsChart>
+                <p className="text-xs text-end">
+                    Zdroj dat: <a href="https://medalspercapita.com/">Olympic Medals per Capita</a>
+                </p>
+
+            </HighchartsProvider >
+        </div >
+
+    </div >
 }
 
 export default Chart5;
