@@ -6,6 +6,7 @@ import Chart2 from './components/Chart2'
 import Chart3 from './components/Chart3'
 import Chart4 from './components/Chart4'
 import Chart5 from './components/Chart5'
+import Chart6 from './components/Chart6'
 
 
 
@@ -30,7 +31,7 @@ function App(props: AppProps) {
       {props.id === "3" && <Chart3 />}
       {props.id === "4" && <Chart4 />}
       {props.id === "5" && <Chart5 />}
-
+      {props.id === "6" && <Chart6 />}
 
 
     </div>

@@ -1,12 +1,13 @@
 import Highcharts from 'highcharts';
 import { HighchartsChart, HighchartsProvider, Chart, BarSeries, XAxis, YAxis } from "react-jsx-highcharts";
 
-import medals from "../assets/olympic-medals-pop-gdp.json"
-
 import { useState, useEffect } from "react"
 
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+
+
+import medals from "../assets/olympic-medals-pop-gdp.json"
 
 
 function assignRanks(data: any[]): any[] {
@@ -103,7 +104,6 @@ function Chart5() {
 
 
     useEffect(() => {
-        console.log(data);
         const czechiaCountry = data.find((country: any) => country.cz.toString().includes("Česká republika"));
         if (czechiaCountry) {
             setCzechia(czechiaCountry.t);
@@ -112,7 +112,7 @@ function Chart5() {
 
     return <div className="max-w-[620px] mx-auto">
         <h1 className="text-2xl font-bold">Pořadí států podle počtu medailí na LOH 2024 v Paříži</h1>
-        <p className="pb-4">Vyzkoušejte si, jak se žebříček změní, když upravíte kritéria.</p>
+        <p className="pb-4">Vyzkoušejte si, jak se žebříček změní, když upravíte kritéria</p>
 
         <div className="flex flex-wrap pb-4">
 
