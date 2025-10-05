@@ -46,8 +46,8 @@ function Chart8() {
                 return value.toLocaleString("cs-CZ") + " %";
               },
             }}
-            min={-0.42}
-            max={0.42}
+            min={-0.45}
+            max={0.45}
           >
             <PlotLine
               value={0}
