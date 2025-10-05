@@ -1,24 +1,25 @@
 import { useEffect } from "react";
 
 import { usePostMessageWithHeight } from "./hooks/usePostHeightMessage";
-import Chart1 from './components/Chart1'
-import Chart2 from './components/Chart2'
-import Chart3 from './components/Chart3'
-import Chart4 from './components/Chart4'
-import Chart5 from './components/Chart5'
-import Chart6 from './components/Chart6'
+import Chart1 from "./components/Chart1";
+import Chart2 from "./components/Chart2";
+import Chart3 from "./components/Chart3";
+import Chart4 from "./components/Chart4";
+import Chart5 from "./components/Chart5";
+import Chart6 from "./components/Chart6";
+import Chart7 from "./components/Chart7";
+import Chart8 from "./components/Chart8";
 
-
-
-import './App.css'
+import "./App.css";
 
 type AppProps = {
-  id: string
-}
+  id: string;
+};
 
 function App(props: AppProps) {
-
-  const { containerRef, postHeightMessage } = usePostMessageWithHeight(`adhoc-${props.id}`);
+  const { containerRef, postHeightMessage } = usePostMessageWithHeight(
+    `adhoc-${props.id}`
+  );
 
   useEffect(() => {
     postHeightMessage();
@@ -32,10 +33,10 @@ function App(props: AppProps) {
       {props.id === "4" && <Chart4 />}
       {props.id === "5" && <Chart5 />}
       {props.id === "6" && <Chart6 />}
-
-
+      {props.id === "7" && <Chart7 />}
+      {props.id === "8" && <Chart8 />}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
